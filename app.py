@@ -11,7 +11,7 @@ import time
 import collections
 import json
 from gevent.pywsgi import WSGIServer
-
+import os
 
 class Player(object):
     def __init__(self, board, game_time=300):
@@ -114,7 +114,9 @@ class Player2(Player):
     def init_stockfish(self):
         self.__is_engine = True
         try:
-            self.__engine = chess.engine.SimpleEngine.popen_uci("/usr/bin/stockfish")
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            stockfish_path = os.path.join(base_dir, "stockfish-ubuntu-x86-64-avx2")
+            self.__engine = chess.engine.SimpleEngine.popen_uci(stockfish_path)
             return True
         except Exception:
             return False
@@ -294,7 +296,7 @@ def run_game():
     http_server = WSGIServer(('0.0.0.0', 1337), app)
     http_server.serve_forever()
 
-    #app.run(host='127.0.0.1', debug=True)
+    # app.run(host='127.0.0.1', debug=True)
 
 
 if __name__ == "__main__":
